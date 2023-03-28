@@ -631,6 +631,14 @@ void led_set_user(uint8_t usb_led) {
   }
 }
 
+void encoder_update_user(uint8_t index, bool clockwise) {
+  if (clockwise) {
+    tap_code(KC_UP);
+  } else {
+    tap_code(KC_DOWN);
+  }
+}
+
 uint32_t layer_state_set_user(uint32_t state)
 {
   uint8_t layer = biton32(state);
