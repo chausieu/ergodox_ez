@@ -177,15 +177,27 @@ uint8_t init_mcp23018(void) {
     if (mcp23018_status) goto out;
     mcp23018_status = i2c_write(0b00111111, ERGODOX_EZ_I2C_TIMEOUT);
     if (mcp23018_status) goto out;
+    i2c_stop();
+
+
+    mcp23018_status = i2c_start(I2C_ADDR_WRITE, ERGODOX_EZ_I2C_TIMEOUT);
+    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(GPPUB, ERGODOX_EZ_I2C_TIMEOUT);
+    if (mcp23018_status) goto out;
+    mcp23018_status = i2c_write(0b11111111 & ~(1 << 6) & ~(1 << 7), ERGODOX_EZ_I2C_TIMEOUT);  // set pull-up for GPB6 and GPB7
+    if (mcp23018_status) goto out;
+
 
 out:
     i2c_stop();
 
-#ifdef LEFT_LEDS
-    if (!mcp23018_status) mcp23018_status = ergodox_left_leds_update();
-#endif  // LEFT_LEDS
+// #ifdef LEFT_LEDS
+//     if (!mcp23018_status) mcp23018_status = ergodox_left_leds_update();
+// #endif  // LEFT_LEDS
 
     // SREG=sreg_prev;
+
+
 
     return mcp23018_status;
 }
